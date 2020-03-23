@@ -72,13 +72,13 @@ class BMSKPS:
             if self.joystick.get_button(button):
                 pygame.draw.rect(
                     self.screen,
-                    (100, 100, 100) if i % 2 == 0 else (155, 155, 155),
+                    (155, 155, 155) if i % 2 == 0 else (100, 100, 100),
                     self.config.keypos[i]
                 )
             else:
                 pygame.draw.rect(
                     self.screen,
-                    (0, 0, 0) if i % 2 == 0 else (255, 255, 255),
+                    (255, 255, 255) if i % 2 == 0 else (0, 0, 0),
                     self.config.keypos[i]
                 )
 
