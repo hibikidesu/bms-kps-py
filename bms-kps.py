@@ -1,6 +1,7 @@
 import pygame
 import json
 import os
+import time
 
 
 class Config:
@@ -69,13 +70,13 @@ class BMSKPS:
         self.screen.fill((0, 0, 255))
 
         for button, i in enumerate(self.config.buttons):
-            if self.joystick.get_button(button):
+            if self.joystick.get_button(button):    # If button is pressed
                 pygame.draw.rect(
                     self.screen,
-                    (155, 155, 155) if i % 2 == 0 else (100, 100, 100),
+                    (100, 100, 100) if i % 2 == 0 else (100, 100, 100),
                     self.config.keypos[i]
                 )
-            else:
+            else:                                   # Not pressed
                 pygame.draw.rect(
                     self.screen,
                     (255, 255, 255) if i % 2 == 0 else (0, 0, 0),
