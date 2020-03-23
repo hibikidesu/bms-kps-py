@@ -105,7 +105,7 @@ class BMSKPS:
         pygame.display.set_caption("BMS-KPS")
         self.clock = pygame.time.Clock()
         pygame.joystick.init()
-        self.font = pygame.font.SysFont("arial", 20)
+        self.font = pygame.font.SysFont("arial", 40)
 
         if config.joystick == -1:
             print("Select a joystick: ")
