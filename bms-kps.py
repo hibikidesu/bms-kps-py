@@ -84,7 +84,7 @@ class BMSKPS:
                     self.config.keypos[i]
                 )
 
-        self.time_count += self.clock.get_time()
+        self.time_count += self.clock.get_rawtime()
 
         print(self.time_count)
         pygame.display.flip()
