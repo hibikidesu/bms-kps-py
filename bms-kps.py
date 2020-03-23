@@ -99,6 +99,7 @@ class BMSKPS:
     def run(self):
         # Setup pygame
         pygame.init()
+        pygame.font.init()
         self.screen = pygame.display.set_mode((self.config.x, self.config.y))
         pygame.display.set_caption("BMS-KPS")
         self.clock = pygame.time.Clock()
