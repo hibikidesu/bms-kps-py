@@ -64,6 +64,10 @@ class BMSKPS:
 
     def render(self):
         self.screen.fill((0, 0, 255))
+
+        if self.joystick.get_button(0):
+            print("BT 0 PRESS")
+
         pygame.display.flip()
 
     def run(self):
