@@ -56,7 +56,7 @@ class BMSKPS:
         self.running = False
         self.ready = False
         self.joystick = None
-        self.time_count = 0.0
+        self.time_count = 0
 
         # PyGame vars
         self.screen = None
@@ -84,7 +84,7 @@ class BMSKPS:
                     self.config.keypos[i]
                 )
 
-        self.time_count += self.clock.get_rawtime()
+        self.time_count += self.clock.get_time()
 
         print(self.time_count)
         pygame.display.flip()
