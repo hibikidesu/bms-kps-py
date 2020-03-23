@@ -57,6 +57,7 @@ class BMSKPS:
         self.ready = False
         self.joystick = None
         self.time_count = 0
+        self.key_presses = 0
 
         # PyGame vars
         self.screen = None
@@ -66,6 +67,8 @@ class BMSKPS:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            elif event.type == pygame.JOYBUTTONDOWN:
+                self.key_presses += 1
 
     def render(self):
         self.screen.fill((0, 0, 255))
@@ -85,8 +88,11 @@ class BMSKPS:
                 )
 
         self.time_count += self.clock.get_time()
+        if self.time_count >= 1000:
+            self.time_count = 0
+            self.key_presses = 0
+            print(self.key_presses)
 
-        print(self.time_count)
         pygame.display.flip()
 
     def run(self):
