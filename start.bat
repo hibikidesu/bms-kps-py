@@ -1,2 +1,2 @@
-python3 bms-kpy.py
+python bms-kpy.py
 pause
