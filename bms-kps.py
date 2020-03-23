@@ -70,9 +70,17 @@ class BMSKPS:
 
         for button, i in enumerate(self.config.buttons):
             if self.joystick.get_button(button):
-                pass
+                pygame.draw.rect(
+                    self.screen,
+                    (100, 100, 100) if i % 2 == 0 else (155, 155, 155),
+                    self.config.keypos[i]
+                )
             else:
-                
+                pygame.draw.rect(
+                    self.screen,
+                    (0, 0, 0) if i % 2 == 0 else (255, 255, 255),
+                    self.config.keypos[i]
+                )
 
         pygame.display.flip()
 
