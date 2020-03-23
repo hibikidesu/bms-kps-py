@@ -25,7 +25,7 @@ class Config:
                 "x": self.x,
                 "y": self.y,
                 "keypos": self.keypos,
-                "keys": self.keys
+                "joystick": self.joystick
             }, f)
 
     @classmethod
