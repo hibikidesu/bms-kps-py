@@ -57,7 +57,7 @@ class BMSKPS:
         self.ready = False
         self.joystick = None
         self.key_presses = []
-        self.font = pygame.font.SysFont("Aerial", 20)
+        self.font = pygame.font.SysFont("arial", 20)
 
         # PyGame vars
         self.screen = None
