@@ -92,7 +92,8 @@ class BMSKPS:
             if (time.time() - kt) > 1:
                 del self.key_presses[i]
 
-        self.screen.blit(self.font.render("{} kps".format(len(self.key_presses))), (5, 5))
+        text = "{} kps".format(len(self.key_presses))
+        self.screen.blit(self.font.render(text, False, (0, 0, 0)), (5, 5))
 
         pygame.display.flip()
 
