@@ -87,7 +87,7 @@ class BMSKPS:
                 )
 
         # self.time_count += self.clock.get_time()
-        for kt, i in enumerate(self.key_presses):
+        for i, kt in enumerate(self.key_presses):
             if (time.time() - kt) > 1:
                 del self.key_presses[i]
 
