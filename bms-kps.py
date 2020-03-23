@@ -9,6 +9,7 @@ class Config:
         self.x = 0
         self.y = 0
         self.keypos = []
+        self.buttons = []
         self.joystick = -1
         self.file_name = ""
 
@@ -25,7 +26,8 @@ class Config:
                 "x": self.x,
                 "y": self.y,
                 "keypos": self.keypos,
-                "joystick": self.joystick
+                "joystick": self.joystick,
+                "buttons": self.buttons
             }, f)
 
     @classmethod
@@ -41,6 +43,7 @@ class Config:
         c.keypos = dat.get("keypos", [])
         c.joystick = c.__get_int(dat.get("joystick"), -1)
         c.file_name = file_name
+        c.buttons = dat.get("buttons", [])
         return c
 
 
@@ -65,8 +68,11 @@ class BMSKPS:
     def render(self):
         self.screen.fill((0, 0, 255))
 
-        if self.joystick.get_button(0):
-            print("BT 0 PRESS")
+        for button, i in enumerate(self.config.buttons):
+            if self.joystick.get_button(button):
+                pass
+            else:
+                
 
         pygame.display.flip()
 
