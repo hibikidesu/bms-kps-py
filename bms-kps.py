@@ -74,7 +74,7 @@ class BMSKPS:
             if self.joystick.get_button(button):    # If button is pressed
                 pygame.draw.rect(
                     self.screen,
-                    (100, 100, 100) if i % 2 == 0 else (100, 100, 100),
+                    (127, 127, 127),
                     self.config.keypos[i]
                 )
             else:                                   # Not pressed
