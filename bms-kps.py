@@ -57,6 +57,7 @@ class BMSKPS:
         self.ready = False
         self.joystick = None
         self.key_presses = []
+        self.font = pygame.font.SysFont("Aerial", 20)
 
         # PyGame vars
         self.screen = None
@@ -91,7 +92,7 @@ class BMSKPS:
             if (time.time() - kt) > 1:
                 del self.key_presses[i]
 
-        print("{} k/s".format(len(self.key_presses)))
+        self.screen.blit(self.font.render("{} kps".format(len(self.key_presses))), (5, 5))
 
         pygame.display.flip()
 
