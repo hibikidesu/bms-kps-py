@@ -76,7 +76,7 @@ class BMSKPS:
 
         if config.joystick == -1:
             print("Select a joystick: ")
-            for joystick_id in pygame.joystick.get_count():
+            for joystick_id in range(pygame.joystick.get_count()):
                 joystick = pygame.joystick.Joystick(joystick_id)
                 joystick.init()
                 print("{}. {}".format(joystick_id, joystick.get_name()))
