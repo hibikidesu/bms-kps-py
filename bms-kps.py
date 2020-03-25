@@ -2,17 +2,23 @@ import pygame
 import json
 import os
 import time
+import math
 
 
 class Config:
 
     def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.keypos = []
-        self.buttons = []
-        self.joystick = -1
-        self.file_name = ""
+        self.window_x = 0
+        self.window_y = 0
+        self.window_bg = []
+        self.joystick_id = -1
+        self.keys = []
+        self.kps_enabled = False
+        self.kps_x = 0
+        self.kps_y = 0
+        self.kps_font = ""
+        self.kps_size = 30
+        self.kps_color = 255
 
     def __get_int(self, val, fallback: int):
         try:
@@ -21,16 +27,6 @@ class Config:
             print("{} is an invalid int".format(val))
             return 0
 
-    def save(self):
-        with open(self.file_name, "w") as f:
-            json.dump({
-                "x": self.x,
-                "y": self.y,
-                "keypos": self.keypos,
-                "joystick": self.joystick,
-                "buttons": self.buttons
-            }, f)
-
     @classmethod
     def load_config(cls, file_name: str = "config.json"):
         if not os.path.isfile(file_name):
@@ -38,13 +34,20 @@ class Config:
             return None
         with open(file_name, "r") as f:
             dat = json.load(f)
+
         c = cls()
-        c.x = c.__get_int(dat.get("x"), 100)
-        c.y = c.__get_int(dat.get("y"), 100)
-        c.keypos = dat.get("keypos", [])
-        c.joystick = c.__get_int(dat.get("joystick"), -1)
-        c.file_name = file_name
-        c.buttons = dat.get("buttons", [])
+        c.window_x = c.__get_int(dat.get("window", {}).get("x", 0), 100)
+        c.window_y = c.__get_int(dat.get("window", {}).get("y", 0), 100)
+        c.window_bg = dat.get("window", {}).get("bg", [])
+        c.joystick_id = c.__get_int(dat.get("joystick_id", -1), -1)
+        c.keys = dat.get("keys", [])
+        kps = dat.get("kps", {})
+        c.kps_enabled = kps.get("enabled", False)
+        c.kps_x = kps.get("x", 0)
+        c.kps_y = kps.get("y", 0)
+        c.kps_font = kps.get("font", "")
+        c.kps_size = c.__get_int(kps.get("size", 30), 30)
+        c.kps_color = c.__get_int(kps.get("color", 255), 255)
         return c
 
 
@@ -54,10 +57,10 @@ class BMSKPS:
         # Class var
         self.config = config
         self.running = False
-        self.ready = False
         self.joystick = None
         self.key_presses = []
         self.font = None
+        self.skip_joycheck = True
 
         # PyGame vars
         self.screen = None
@@ -70,73 +73,104 @@ class BMSKPS:
             elif event.type == pygame.JOYBUTTONDOWN:
                 self.key_presses.append(time.time())
 
+    def draw_rect(self, color: int, x: int, y: int, w: int, h: int):
+        pygame.draw.rect(
+            self.screen,
+            (color, color, color),
+            (x, y, w, h)
+        )
+
+    def draw_circle(self, color: int, x: int, y: int, radius: int, angle: int):
+        pygame.draw.circle(
+            self.screen,
+            (color, color, color),
+            (x, y), radius, 2
+        )
+        pygame.draw.line(
+            self.screen,
+            (color, color, color),
+            (x, y), (x + (radius * math.cos(angle * math.pi / 180)), y + (radius * math.sin(angle * math.pi / 180))), 2
+        )
+
     def render(self):
-        self.screen.fill((0, 0, 255))
+        self.screen.fill(self.config.window_bg)
 
-        for button, i in enumerate(self.config.buttons):
-            if self.joystick.get_button(button):    # If button is pressed
-                pygame.draw.rect(
-                    self.screen,
-                    (127, 127, 127),
-                    self.config.keypos[i]
+        for i, button in enumerate(self.config.keys):
+            if button[1] == 0:
+                self.draw_rect(
+                    (128, 128, 128) if self.joystick.get_button(button[0]) else button[6],
+                    button[2],
+                    button[3],
+                    button[4],
+                    button[5]
                 )
-            else:                                   # Not pressed
-                pygame.draw.rect(
-                    self.screen,
-                    (255, 255, 255) if i % 2 == 0 else (0, 0, 0),
-                    self.config.keypos[i]
-                )
+            elif button[1] == 1:
+                self.draw_circle(button[6], button[2], button[3], button[4], 0)
 
-        # self.time_count += self.clock.get_time()
         for i, kt in enumerate(self.key_presses):
             if (time.time() - kt) > 1:
                 del self.key_presses[i]
 
-        text = "{} kps".format(len(self.key_presses))
-        self.screen.blit(self.font.render(text, False, (0, 0, 0)), (5, 5))
+        if self.config.kps_enabled:
+            text = "{} kps".format(len(self.key_presses))
+            self.screen.blit(
+                self.font.render(text, False, (self.config.kps_color, self.config.kps_color, self.config.kps_color)),
+                (self.config.kps_x, self.config.kps_y)
+            )
 
         pygame.display.flip()
+
+    def quit(self):
+        pygame.font.quit()
+        pygame.joystick.quit()
+        pygame.quit()
+
+    def wait_for_ready(self):
+        while True:
+            self.handle_events()
+            if self.clock.get_fps() >= 1:
+                break
+            self.clock.tick(60)
+        print("Ready")
 
     def run(self):
         # Setup pygame
         pygame.init()
         pygame.font.init()
-        self.screen = pygame.display.set_mode((self.config.x, self.config.y))
+        self.screen = pygame.display.set_mode((self.config.window_x, self.config.window_y))
         pygame.display.set_caption("BMS-KPS")
         self.clock = pygame.time.Clock()
         pygame.joystick.init()
-        self.font = pygame.font.SysFont("arial", 20)
+        self.font = pygame.font.SysFont("arial", self.config.kps_size)
 
-        if config.joystick == -1:
-            print("Select a joystick: ")
+        if self.config.joystick_id < 0:
+            print("Set a joystick in the config: ")
             for joystick_id in range(pygame.joystick.get_count()):
                 joystick = pygame.joystick.Joystick(joystick_id)
                 joystick.init()
                 print("{}. {}".format(joystick_id, joystick.get_name()))
-            while True:
-                try:
-                    jsid = int(input("ID: "))
-                    break
-                except ValueError:
-                    pass
-            self.config.joystick = jsid
-            self.config.save()
-        self.joystick = pygame.joystick.Joystick(self.config.joystick)
-        self.joystick.init()
+                self.quit()
+            return
+
+        try:
+            self.joystick = pygame.joystick.Joystick(self.config.joystick_id)
+            self.joystick.init()
+        except pygame.error:
+            print("Invalid joystick")
+            if not self.skip_joycheck:
+                self.quit()
+                return
 
         # Begin loop
         self.running = True
 
+        # Wait for ready
+        self.wait_for_ready()
+
         try:
             while self.running:
                 self.handle_events()
-
-                # Wait for window to be created
-                if not self.ready and self.clock.get_fps() >= 1:
-                    self.ready = True
-
-                if self.ready:      # If ready to be drawn to window
-                    self.render()   # Render frame
+                self.render()   # Render frame
 
                 # Tick fps
                 self.clock.tick(60)
@@ -145,5 +179,5 @@ class BMSKPS:
 
 
 if __name__ == "__main__":
-    config = Config.load_config()
-    BMSKPS(config).run()
+    _config = Config.load_config()
+    BMSKPS(_config).run()
