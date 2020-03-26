@@ -64,6 +64,7 @@ class BMSKPS:
         self.total_key_presses = 0
         self.last_update = 0
         self.top_key_presses = 0
+        self.last_key_press = 0
         self.font = None
         self.skip_joycheck = True
 
@@ -111,17 +112,18 @@ class BMSKPS:
         if (int(time.time()) - self.last_update) > 1:
             if self.key_presses > self.top_key_presses:
                 self.top_key_presses = self.key_presses
-            self.key_presses = 0
+            self.key_presses = self.key_presses - self.last_key_press
             self.last_update = int(time.time())
+            self.last_key_press = self.key_presses
 
         if self.config.kps_enabled:
             self.draw_text(
                 "{} kps\n"
-                "{} top\n"
+                "{} total\n"
                 "{} avg".format(
                     self.key_presses,
                     self.total_key_presses,
-                    (self.total_key_presses / (int(time.time()) - self.start_time))
+                    round(self.total_key_presses / (int(time.time()) - self.start_time), 1)
                 ),
                 self.config.kps_color,
                 self.config.kps_x,
@@ -139,7 +141,7 @@ class BMSKPS:
         while True:
             self.handle_events()
             if self.clock.get_fps() >= 1:
-                self.start_time = int(time.time())
+                self.start_time = int(time.time()) - 1
                 break
             self.clock.tick(60)
         print("Ready")
@@ -190,7 +192,7 @@ class BMSKPS:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 2:
         print("{} <file>".format(sys.argv[0]))
     else:
-        BMSKPS(Config.load_config(sys.argv[2])).run()
+        BMSKPS(Config.load_config(sys.argv[1])).run()
