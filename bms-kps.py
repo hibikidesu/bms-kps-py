@@ -59,7 +59,9 @@ class BMSKPS:
         self.config = config
         self.running = False
         self.joystick = None
-        self.key_presses = []
+        self.key_presses = 0
+        self.total_key_presses = 0
+        self.last_update = 0
         self.font = None
         self.skip_joycheck = True
 
@@ -72,26 +74,22 @@ class BMSKPS:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.JOYBUTTONDOWN:
-                self.key_presses.append(time.time())
+                self.key_presses += 1
+                self.total_key_presses += 1
 
     def draw_rect(self, color: int, x: int, y: int, w: int, h: int):
-        pygame.draw.rect(
-            self.screen,
-            (color, color, color),
-            (x, y, w, h)
-        )
+        pygame.draw.rect(self.screen, ((color,) * 3), (x, y, w, h))
 
     def draw_circle(self, color: int, x: int, y: int, radius: int, angle: int):
-        pygame.draw.circle(
-            self.screen,
-            (color, color, color),
-            (x, y), radius, 2
-        )
+        pygame.draw.circle(self.screen, ((color,) * 3), (x, y), radius, 2)
         pygame.draw.line(
             self.screen,
-            (color, color, color),
+            ((color,) * 3),
             (x, y), (x + (radius * math.cos(angle * math.pi / 180)), y + (radius * math.sin(angle * math.pi / 180))), 2
         )
+
+    def draw_text(self, text: str, color: int, x: int, y: int):
+        self.screen.blit(self.font.render(text, False, ((color,) * 3)), (x, y))
 
     def render(self):
         self.screen.fill(self.config.window_bg)
@@ -108,15 +106,16 @@ class BMSKPS:
             elif button[1] == 1:
                 self.draw_circle(button[6], button[2], button[3], button[4], self.joystick.get_axis(button[0]) * 360)
 
-        for i, kt in enumerate(self.key_presses):
-            if (time.time() - kt) > 1:
-                del self.key_presses[i]
+        if (int(time.time()) - self.last_update) > 1:
+            self.key_presses = 0
+            self.last_update = int(time.time())
 
         if self.config.kps_enabled:
-            text = "{} kps".format(len(self.key_presses))
-            self.screen.blit(
-                self.font.render(text, False, (self.config.kps_color, self.config.kps_color, self.config.kps_color)),
-                (self.config.kps_x, self.config.kps_y)
+            self.draw_text(
+                "{} kps".format(self.key_presses),
+                self.config.kps_color,
+                self.config.kps_x,
+                self.config.kps_y
             )
 
         pygame.display.flip()
