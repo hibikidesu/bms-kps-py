@@ -3,6 +3,7 @@ import json
 import os
 import time
 import math
+import sys
 
 
 class Config:
@@ -25,10 +26,10 @@ class Config:
             return int(val)
         except (ValueError, TypeError):
             print("{} is an invalid int".format(val))
-            return 0
+            return fallback
 
     @classmethod
-    def load_config(cls, file_name: str = "config.json"):
+    def load_config(cls, file_name: str):
         if not os.path.isfile(file_name):
             print("Not valid file")
             return None
