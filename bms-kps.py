@@ -179,7 +179,7 @@ class BMSKPS:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print("{} <file>".format(sys.argv[0]))
     else:
-        BMSKPS(Config.load_config(sys.argv[1])).run()
+        BMSKPS(Config.load_config(sys.argv[2])).run()
