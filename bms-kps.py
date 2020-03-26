@@ -59,9 +59,11 @@ class BMSKPS:
         self.config = config
         self.running = False
         self.joystick = None
+        self.start_time = 0
         self.key_presses = 0
         self.total_key_presses = 0
         self.last_update = 0
+        self.top_key_presses = 0
         self.font = None
         self.skip_joycheck = True
 
@@ -107,12 +109,20 @@ class BMSKPS:
                 self.draw_circle(button[6], button[2], button[3], button[4], self.joystick.get_axis(button[0]) * 360)
 
         if (int(time.time()) - self.last_update) > 1:
+            if self.key_presses > self.top_key_presses:
+                self.top_key_presses = self.key_presses
             self.key_presses = 0
             self.last_update = int(time.time())
 
         if self.config.kps_enabled:
             self.draw_text(
-                "{} kps".format(self.key_presses),
+                "{} kps\n"
+                "{} top\n"
+                "{} avg".format(
+                    self.key_presses,
+                    self.total_key_presses,
+                    (self.total_key_presses / (int(time.time()) - self.start_time))
+                ),
                 self.config.kps_color,
                 self.config.kps_x,
                 self.config.kps_y
@@ -129,6 +139,7 @@ class BMSKPS:
         while True:
             self.handle_events()
             if self.clock.get_fps() >= 1:
+                self.start_time = int(time.time())
                 break
             self.clock.tick(60)
         print("Ready")
