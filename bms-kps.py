@@ -99,14 +99,14 @@ class BMSKPS:
         for i, button in enumerate(self.config.keys):
             if button[1] == 0:
                 self.draw_rect(
-                    (128, 128, 128) if self.joystick.get_button(button[0]) else button[6],
+                    128 if self.joystick.get_button(button[0]) else button[6],
                     button[2],
                     button[3],
                     button[4],
                     button[5]
                 )
             elif button[1] == 1:
-                self.draw_circle(button[6], button[2], button[3], button[4], 0)
+                self.draw_circle(button[6], button[2], button[3], button[4], self.joystick.get_axis(button[0]) * 360)
 
         for i, kt in enumerate(self.key_presses):
             if (time.time() - kt) > 1:
