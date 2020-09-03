@@ -20,6 +20,8 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
+        sudo apt update
+        sudo apt install python-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libsmpeg-dev python-numpy subversion libportmidi-dev ffmpeg libswscale-dev libavformat-dev libavcodec-dev
         python -m pip install -U pip
         pip install -U pygame pyinstaller
     - name: Build and publish
