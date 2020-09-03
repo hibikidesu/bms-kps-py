@@ -9,10 +9,6 @@ jobs:
   ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - name: Load Release URL File from release job
-      uses: actions/download-artifact@v1
-      with:
-        name: release_url
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -44,10 +40,6 @@ jobs:
   osx:
     runs-on: macos-latest
     steps:
-    - name: Load Release URL File from release job
-      uses: actions/download-artifact@v1
-      with:
-        name: release_url
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
