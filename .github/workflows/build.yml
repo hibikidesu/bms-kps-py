@@ -48,6 +48,8 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+        brew install sdl2 sdl sdl_image sdl_mixer sdl_ttf portmidi
         python -m pip install -U pip
         pip install -U pygame pyinstaller
     - name: Build and publish
