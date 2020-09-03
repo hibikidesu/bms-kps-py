@@ -1,0 +1,37 @@
+# This workflows will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+name: Build binary
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install -U pip
+        pip install -U pygame pyinstaller
+    - name: Build and publish
+      run: |
+        echo "Building"
+        pyinstaller bms-kps-py.py -F -n bms-kps-py
+        cp sdvx.json dist/
+        cp pwan.json dist/
+        zip -XT9vDrj build.zip dist/*
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        title: "Build"
+        files: |
+          "build.zip"
