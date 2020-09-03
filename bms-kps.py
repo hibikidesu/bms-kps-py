@@ -66,7 +66,7 @@ class BMSKPS:
         self.top_key_presses = 0
         self.last_key_press = 0
         self.font = None
-        self.skip_joycheck = True
+        self.skip_joycheck = False
 
         # PyGame vars
         self.screen = None
