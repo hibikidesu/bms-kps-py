@@ -38,4 +38,4 @@ jobs:
         prerelease: false
         title: "Latest Build"
         files: |
-          "ubuntu.zip"
+          ubuntu.zip
