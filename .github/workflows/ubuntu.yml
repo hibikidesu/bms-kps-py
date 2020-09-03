@@ -30,11 +30,12 @@ jobs:
         pyinstaller bms-kps.py -F -n bms-kps
         cp sdvx.json dist/
         cp pwan.json dist/
-        zip -XT9vDrj build.zip dist/*
+        zip -XT9vDrj ubuntu.zip dist/*
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "latest"
-        title: "Build"
+        prerelease: false
+        title: "Latest Build"
         files: |
           "ubuntu.zip"
