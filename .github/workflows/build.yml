@@ -81,7 +81,7 @@ jobs:
         python -m pip install -U pip
         pip install -U pygame pyinstaller
     - name: Install 7zip
-      run. |
+      run: |
         Invoke-WebRequest https://www.7-zip.org/a/7z1900-x64.exe -OutFile 7z.exe
     - name: Build and publish
       run: |
