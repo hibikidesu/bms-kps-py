@@ -76,7 +76,7 @@ class BMSKPS:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.JOYBUTTONDOWN:
+            elif event.type == pygame.JOYBUTTONDOWN and event.button:
                 self.key_presses += 1
                 self.total_key_presses += 1
 
