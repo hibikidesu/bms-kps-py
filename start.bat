@@ -1,2 +1,2 @@
-python bms-kps.py pwan.json
+python bms-kps.py sdvx.json
 pause
