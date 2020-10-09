@@ -155,14 +155,16 @@ class BMSKPS:
         self.clock = pygame.time.Clock()
         pygame.joystick.init()
         self.font = pygame.font.SysFont("arial", self.config.kps_size)
+        
+        print("Joysticks:")
+        for joystick_id in range(pygame.joystick.get_count()):
+            joystick = pygame.joystick.Joystick(joystick_id)
+            joystick.init()
+            print("ID: {} NAME: {} BUTTONS: {} AXES: {}".format(joystick_id, joystick.get_name(), joystick.get_numbuttons(), joystick.get_numaxes()))
 
         if self.config.joystick_id < 0:
-            print("Set a joystick in the config: ")
-            for joystick_id in range(pygame.joystick.get_count()):
-                joystick = pygame.joystick.Joystick(joystick_id)
-                joystick.init()
-                print("{}. {}".format(joystick_id, joystick.get_name()))
-                self.quit()
+            print("Please set a joystick in the config")
+            self.quit()
             return
 
         try:
