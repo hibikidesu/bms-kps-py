@@ -107,7 +107,7 @@ class BMSKPS:
                     button[5]
                 )
             elif button[1] == 1:
-                self.draw_circle(button[6], button[2], button[3], button[4], self.joystick.get_axis(button[0]) * 360)
+                self.draw_circle(button[6], button[2], button[3], button[4], self.joystick.get_axis(button[0]) * 180)
 
         if (int(time.time()) - self.last_update) > 1:
             if self.key_presses > self.top_key_presses:
